@@ -208,6 +208,215 @@ class ListImplementationTest {
   }
 
   @Nested
+  @DisplayName("Add with index operations")
+  class AddWithIndexTests {
+
+    @Test
+    @DisplayName("add(index, element) should insert element at beginning")
+    void addWithIndexShouldInsertElementAtBeginning() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+        list.add("third");
+
+        list.add(0, "new_first");
+
+        assertEquals(4, list.size());
+        assertEquals("new_first", list.get(0));
+        assertEquals("first", list.get(1));
+        assertEquals("second", list.get(2));
+        assertEquals("third", list.get(3));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should insert element at middle")
+    void addWithIndexShouldInsertElementAtMiddle() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+        list.add("third");
+
+        list.add(1, "new_middle");
+
+        assertEquals(4, list.size());
+        assertEquals("first", list.get(0));
+        assertEquals("new_middle", list.get(1));
+        assertEquals("second", list.get(2));
+        assertEquals("third", list.get(3));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should insert element at end")
+    void addWithIndexShouldInsertElementAtEnd() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+        list.add("third");
+
+        list.add(3, "new_last");
+
+        assertEquals(4, list.size());
+        assertEquals("first", list.get(0));
+        assertEquals("second", list.get(1));
+        assertEquals("third", list.get(2));
+        assertEquals("new_last", list.get(3));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should insert element in empty list")
+    void addWithIndexShouldInsertElementInEmptyList() {
+      testAllLists((List<String> list) -> {
+        list.add(0, "only_element");
+
+        assertEquals(1, list.size());
+        assertEquals("only_element", list.get(0));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should increase size by 1")
+    void addWithIndexShouldIncreaseSizeByOne() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+
+        int originalSize = list.size();
+        list.add(1, "inserted");
+        assertEquals(originalSize + 1, list.size());
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should shift subsequent elements to the right")
+    void addWithIndexShouldShiftSubsequentElementsToRight() {
+      testAllLists((List<String> list) -> {
+        list.add("element0");
+        list.add("element1");
+        list.add("element2");
+        list.add("element3");
+
+        list.add(2, "inserted");
+
+        assertEquals("element0", list.get(0));
+        assertEquals("element1", list.get(1));
+        assertEquals("inserted", list.get(2));
+        assertEquals("element2", list.get(3));
+        assertEquals("element3", list.get(4));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should allow adding null values")
+    void addWithIndexShouldAllowAddingNullValues() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+
+        list.add(1, null);
+
+        assertEquals(3, list.size());
+        assertEquals("first", list.get(0));
+        assertNull(list.get(1));
+        assertEquals("second", list.get(2));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should allow adding duplicate elements")
+    void addWithIndexShouldAllowAddingDuplicateElements() {
+      testAllLists((List<String> list) -> {
+        list.add("duplicate");
+        list.add("other");
+
+        list.add(1, "duplicate");
+
+        assertEquals(3, list.size());
+        assertEquals("duplicate", list.get(0));
+        assertEquals("duplicate", list.get(1));
+        assertEquals("other", list.get(2));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should throw IndexOutOfBoundsException for negative index")
+    void addWithIndexShouldThrowExceptionForNegativeIndex() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+
+        assertThrows(IndexOutOfBoundsException.class, () -> list.add(-1, "element"));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should throw IndexOutOfBoundsException for index > size")
+    void addWithIndexShouldThrowExceptionForIndexGreaterThanSize() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+
+        assertThrows(IndexOutOfBoundsException.class, () -> list.add(3, "element"));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.add(100, "element"));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should work with index equal to size (append)")
+    void addWithIndexShouldWorkWithIndexEqualToSize() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+
+        int size = list.size();
+        list.add(size, "appended");
+
+        assertEquals(size + 1, list.size());
+        assertEquals("appended", list.get(size));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should handle multiple insertions correctly")
+    void addWithIndexShouldHandleMultipleInsertionsCorrectly() {
+      testAllLists((List<String> list) -> {
+        list.add("a");
+        list.add("b");
+        list.add("c");
+
+        list.add(1, "x"); // a, x, b, c
+        list.add(3, "y"); // a, x, b, y, c
+        list.add(0, "z"); // z, a, x, b, y, c
+
+        assertEquals(6, list.size());
+        assertEquals("z", list.get(0));
+        assertEquals("a", list.get(1));
+        assertEquals("x", list.get(2));
+        assertEquals("b", list.get(3));
+        assertEquals("y", list.get(4));
+        assertEquals("c", list.get(5));
+      });
+    }
+
+    @Test
+    @DisplayName("add(index, element) should work after clear()")
+    void addWithIndexShouldWorkAfterClear() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+        list.clear();
+
+        list.add(0, "new_element");
+
+        assertEquals(1, list.size());
+        assertEquals("new_element", list.get(0));
+      });
+    }
+  }
+
+  @Nested
   @DisplayName("Get operations")
   class GetTests {
 
