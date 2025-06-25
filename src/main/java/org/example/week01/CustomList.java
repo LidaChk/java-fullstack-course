@@ -1,5 +1,6 @@
 package org.example.week01;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -7,49 +8,102 @@ import java.util.ListIterator;
 
 public class CustomList<T> implements List<T> {
 
+    private static final int DEFAULT_CAPACITY = 10;
+    private static final int GROWTH_FACTOR = 2;
+
+    private T[] elements;
+    private int size;
+
     public CustomList() {
+        elements = (T[]) new Object[DEFAULT_CAPACITY];
+        size = 0;
     }
 
     public CustomList(int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
+        elements = (T[]) new Object[initialCapacity];
+        size = 0;
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
+
+    private void resize() {
+        int newCapacity = elements.length == 0 ? 1 : elements.length * GROWTH_FACTOR;
+        elements = Arrays.copyOf(elements, newCapacity);
     }
 
     /*** Basic Implementation ***/
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return size == 0;
     }
 
     @Override
-    public boolean add(Object o) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void add(int index, T element) {
+        if (index == size) {
+            add(element);
+            return;
+        }
+        checkIndex(index);
+        if (size == elements.length) {
+            resize();
+        }
+        System.arraycopy(elements, index, elements, index + 1, size - index);
+        elements[index] = element;
+        size++;
+    }
+
+    @Override
+    public boolean add(T element) {
+        if (size == elements.length) {
+            resize();
+        }
+        elements[size++] = element;
+        return true;
     }
 
     @Override
     public T get(int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        return elements[index];
     }
 
     @Override
-    public T set(int index, Object element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public T set(int index, T element) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        T oldValue = elements[index];
+        elements[index] = element;
+        return oldValue;
     }
 
     @Override
     public T remove(int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        checkIndex(index);
+        T removedElement = elements[index];
+        System.arraycopy(elements, index + 1, elements, index, size - index - 1);
+        size--;
+        elements[size] = null;
+        return removedElement;
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Arrays.fill(elements, 0, size, null);
+        size = 0;
     }
 
     /***  ***/
@@ -80,11 +134,6 @@ public class CustomList<T> implements List<T> {
 
     @Override
     public boolean addAll(int index, Collection c) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void add(int index, Object element) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
