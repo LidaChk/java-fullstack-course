@@ -7,6 +7,15 @@ import java.util.ListIterator;
 
 public class CustomList<T> implements List<T> {
 
+    public CustomList() {
+    }
+
+    public CustomList(int initialCapacity) {
+        if (initialCapacity < 0) {
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+        }
+    }
+
     /*** Basic Implementation ***/
     @Override
     public int size() {
@@ -43,7 +52,7 @@ public class CustomList<T> implements List<T> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /*** ***/
+    /***  ***/
     @Override
     public boolean contains(Object o) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -58,7 +67,6 @@ public class CustomList<T> implements List<T> {
     public Object[] toArray() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 
     @Override
     public boolean remove(Object o) {
@@ -75,12 +83,10 @@ public class CustomList<T> implements List<T> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
     @Override
     public void add(int index, Object element) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 
     @Override
     public int indexOf(Object o) {
