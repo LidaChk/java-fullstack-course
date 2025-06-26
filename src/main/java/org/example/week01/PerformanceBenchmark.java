@@ -21,7 +21,6 @@ public class PerformanceBenchmark {
     listFactories.add(() -> new LinkedList<>());
     listFactories.add(() -> new CustomList<>());
 
-
     runBulkAdditionTest();
     runAddRemoveTest();
 
@@ -37,7 +36,7 @@ public class PerformanceBenchmark {
       List<Integer> list = factory.get();
       String listType = list.getClass().getSimpleName();
 
-      BenchmarkResult result = measureBulkAddition(factory, listType);
+      BenchmarkResult result = measureBulkAddition(factory);
 
       printResult(listType, result);
     }
@@ -52,7 +51,7 @@ public class PerformanceBenchmark {
       List<Integer> list = factory.get();
       String listType = list.getClass().getSimpleName();
 
-      BenchmarkResult result = measureAddRemove(factory, listType);
+      BenchmarkResult result = measureAddRemove(factory);
 
       printResult(listType, result);
     }
@@ -60,7 +59,7 @@ public class PerformanceBenchmark {
     System.out.println();
   }
 
-  private static BenchmarkResult measureBulkAddition(Supplier<List<Integer>> supplier, String listType) {
+  private static BenchmarkResult measureBulkAddition(Supplier<List<Integer>> supplier) {
     long memoryBefore = getUsedMemoryBefore();
 
     long startTime = System.currentTimeMillis();
@@ -73,12 +72,12 @@ public class PerformanceBenchmark {
     long endTime = System.currentTimeMillis();
     long memoryAfter = getUsedMemoryAfter();
 
-    long memoryMB = bytesToMB(memoryAfter - memoryBefore);
+    double memoryMB = bytesToMB(memoryAfter - memoryBefore);
 
     return new BenchmarkResult(endTime - startTime, memoryMB);
   }
 
-  private static BenchmarkResult measureAddRemove(Supplier<List<Integer>> supplier, String listType) {
+  private static BenchmarkResult measureAddRemove(Supplier<List<Integer>> supplier) {
     List<Integer> list = supplier.get();
 
     long memoryBefore = getUsedMemoryBefore();
@@ -97,13 +96,13 @@ public class PerformanceBenchmark {
     long endTime = System.currentTimeMillis();
     long memoryAfter = getUsedMemoryAfter();
 
-    long memoryMB = bytesToMB(memoryAfter - memoryBefore);
+    double memoryMB = bytesToMB(memoryAfter - memoryBefore);
 
     return new BenchmarkResult(endTime - startTime, memoryMB);
   }
 
-  private static long bytesToMB(long bytes) {
-    return bytes / (1024 * 1024);
+  private static double bytesToMB(long bytes) {
+    return (double) bytes / (1024 * 1024);
   }
 
   private static long getUsedMemoryBefore() {
@@ -116,15 +115,15 @@ public class PerformanceBenchmark {
   }
 
   private static void printResult(String listType, BenchmarkResult result) {
-    System.out.printf("%-12s Time: %6d ms, Memory: %4d MB%n",
+    System.out.printf("%-12s Time: %6d ms, Memory: %6.2f MB%n",
         listType + ":", result.getTimeMs(), result.getMemoryMB());
   }
 
   private static class BenchmarkResult {
     private final long timeMs;
-    private final long memoryMB;
+    private final double memoryMB;
 
-    public BenchmarkResult(long timeMs, long memoryMB) {
+    public BenchmarkResult(long timeMs, double memoryMB) {
       this.timeMs = timeMs;
       this.memoryMB = memoryMB;
     }
@@ -133,7 +132,7 @@ public class PerformanceBenchmark {
       return timeMs;
     }
 
-    public long getMemoryMB() {
+    public double getMemoryMB() {
       return memoryMB;
     }
   }
