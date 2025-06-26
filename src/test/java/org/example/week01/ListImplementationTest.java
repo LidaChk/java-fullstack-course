@@ -22,8 +22,8 @@ class ListImplementationTest {
   private <T> void testAllLists(Integer capacity, Consumer<List<T>> test) {
     List<Supplier<List<T>>> factories = new ArrayList<>();
     if (capacity == null) {
-      factories.add(() -> new ArrayList<>());
-      factories.add(() -> new CustomList<>());
+      factories.add(ArrayList::new);
+      factories.add(CustomList::new);
     } else {
       factories.add(() -> new ArrayList<>(capacity));
       factories.add(() -> new CustomList<>(capacity));
@@ -84,15 +84,11 @@ class ListImplementationTest {
     @Test
     @DisplayName("Constructor with negative capacity should throw IllegalArgumentException")
     void constructorWithNegativeCapacityShouldThrowException() {
-      assertThrows(IllegalArgumentException.class, () -> {
-        testAllListsWithCapacity(-1, (List<String> list) -> {
-        });
-      });
+      assertThrows(IllegalArgumentException.class, () -> testAllListsWithCapacity(-1, (List<String> list) -> {
+      }));
 
-      assertThrows(IllegalArgumentException.class, () -> {
-        testAllListsWithCapacity(-10, (List<String> list) -> {
-        });
-      });
+      assertThrows(IllegalArgumentException.class, () -> testAllListsWithCapacity(-10, (List<String> list) -> {
+      }));
     }
   }
 
@@ -103,9 +99,7 @@ class ListImplementationTest {
     @Test
     @DisplayName("size() should return 0 for empty list")
     void sizeShouldReturnZeroForEmptyList() {
-      testAllLists((List<String> list) -> {
-        assertEquals(0, list.size());
-      });
+      testAllLists((List<String> list) -> assertEquals(0, list.size()));
     }
 
     @Test
@@ -126,9 +120,7 @@ class ListImplementationTest {
     @Test
     @DisplayName("isEmpty() should return true for new list")
     void isEmptyShouldReturnTrueForNewList() {
-      testAllLists((List<String> list) -> {
-        assertTrue(list.isEmpty());
-      });
+      testAllLists((List<String> list) -> assertTrue(list.isEmpty()));
     }
 
     @Test
@@ -158,9 +150,7 @@ class ListImplementationTest {
     @Test
     @DisplayName("add() should return true when adding element")
     void addShouldReturnTrueWhenAddingElement() {
-      testAllLists((List<String> list) -> {
-        assertTrue(list.add("element"));
-      });
+      testAllLists((List<String> list) -> assertTrue(list.add("element")));
     }
 
     @Test
@@ -462,9 +452,7 @@ class ListImplementationTest {
     @Test
     @DisplayName("get() should throw IndexOutOfBoundsException for empty list")
     void getShouldThrowExceptionForEmptyList() {
-      testAllLists((List<String> list) -> {
-        assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
-      });
+      testAllLists((List<String> list) -> assertThrows(IndexOutOfBoundsException.class, () -> list.get(0)));
     }
 
     @Test

@@ -17,9 +17,9 @@ public class PerformanceBenchmark {
     System.out.println("=== PERFORMANCE BENCHMARK RESULTS ===\n");
 
     listFactories = new ArrayList<>();
-    listFactories.add(() -> new ArrayList<>());
-    listFactories.add(() -> new LinkedList<>());
-    listFactories.add(() -> new CustomList<>());
+    listFactories.add(ArrayList::new);
+    listFactories.add(LinkedList::new);
+    listFactories.add(CustomList::new);
 
     runBulkAdditionTest();
     runAddRemoveTest();
@@ -116,24 +116,9 @@ public class PerformanceBenchmark {
 
   private static void printResult(String listType, BenchmarkResult result) {
     System.out.printf("%-12s Time: %6d ms, Memory: %6.2f MB%n",
-        listType + ":", result.getTimeMs(), result.getMemoryMB());
+        listType + ":", result.timeMs(), result.memoryMB());
   }
 
-  private static class BenchmarkResult {
-    private final long timeMs;
-    private final double memoryMB;
-
-    public BenchmarkResult(long timeMs, double memoryMB) {
-      this.timeMs = timeMs;
-      this.memoryMB = memoryMB;
-    }
-
-    public long getTimeMs() {
-      return timeMs;
-    }
-
-    public double getMemoryMB() {
-      return memoryMB;
-    }
+  private record BenchmarkResult(long timeMs, double memoryMB) {
   }
 }
