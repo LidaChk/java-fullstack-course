@@ -21,6 +21,7 @@ public class PerformanceBenchmark {
     listFactories.add(() -> new LinkedList<>());
     listFactories.add(() -> new CustomList<>());
 
+
     runBulkAdditionTest();
     runAddRemoveTest();
 
@@ -60,11 +61,58 @@ public class PerformanceBenchmark {
   }
 
   private static BenchmarkResult measureBulkAddition(Supplier<List<Integer>> supplier, String listType) {
+    long memoryBefore = getUsedMemoryBefore();
 
+    long startTime = System.currentTimeMillis();
+    List<Integer> list = supplier.get();
+
+    for (int i = 0; i < BULK_ADDITION_SIZE; i++) {
+      list.add(i);
+    }
+
+    long endTime = System.currentTimeMillis();
+    long memoryAfter = getUsedMemoryAfter();
+
+    long memoryMB = bytesToMB(memoryAfter - memoryBefore);
+
+    return new BenchmarkResult(endTime - startTime, memoryMB);
   }
 
   private static BenchmarkResult measureAddRemove(Supplier<List<Integer>> supplier, String listType) {
+    List<Integer> list = supplier.get();
 
+    long memoryBefore = getUsedMemoryBefore();
+    long startTime = System.currentTimeMillis();
+
+    for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
+      list.add(i);
+    }
+
+    for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
+      if (!list.isEmpty()) {
+        list.remove(0);
+      }
+    }
+
+    long endTime = System.currentTimeMillis();
+    long memoryAfter = getUsedMemoryAfter();
+
+    long memoryMB = bytesToMB(memoryAfter - memoryBefore);
+
+    return new BenchmarkResult(endTime - startTime, memoryMB);
+  }
+
+  private static long bytesToMB(long bytes) {
+    return bytes / (1024 * 1024);
+  }
+
+  private static long getUsedMemoryBefore() {
+    Runtime.getRuntime().gc();
+    return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+  }
+
+  private static long getUsedMemoryAfter() {
+    return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
   }
 
   private static void printResult(String listType, BenchmarkResult result) {
