@@ -35,7 +35,7 @@ public class CustomList<T> implements List<T> {
     }
 
     private void resize() {
-        int newCapacity = elements.length == 0 ? 1 : (int) (elements.length * GROWTH_FACTOR) + 1;
+        int newCapacity = elements.length == 0 ? DEFAULT_CAPACITY : (int) (elements.length * GROWTH_FACTOR) + 1;
         elements = Arrays.copyOf(elements, newCapacity);
     }
 
@@ -76,17 +76,13 @@ public class CustomList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
+        checkIndex(index);
         return elements[index];
     }
 
     @Override
     public T set(int index, T element) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
+        checkIndex(index);
         T oldValue = elements[index];
         elements[index] = element;
         return oldValue;

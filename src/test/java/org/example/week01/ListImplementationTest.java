@@ -23,23 +23,22 @@ class ListImplementationTest {
 
   private <T> Stream<DynamicTest> createTestsForEachList(String testName, Integer capacity,
       Consumer<List<T>> test) {
-    List<Supplier<List<T>>> factories = new ArrayList<>();
-    List<String> factoryNames = new ArrayList<>();
+    List<Supplier<List<T>>> listFactories = new ArrayList<>();
+
     if (capacity == null) {
-      factories.add(ArrayList::new);
-      factoryNames.add("ArrayList");
-      factories.add(CustomList::new);
-      factoryNames.add("CustomList");
+        listFactories.add(ArrayList::new);
+        listFactories.add(CustomList::new);
     } else {
-      factories.add(() -> new ArrayList<>(capacity));
-      factoryNames.add("ArrayList(capacity=" + capacity + ")");
-      factories.add(() -> new CustomList<>(capacity));
-      factoryNames.add("CustomList(capacity=" + capacity + ")");
+        listFactories.add(() -> new ArrayList<>(capacity));
+        listFactories.add(() -> new CustomList<>(capacity));
     }
+
     Stream.Builder<DynamicTest> testBuilder = Stream.builder();
-    for (int i = 0; i < factories.size(); i++) {
-      final Supplier<List<T>> factory = factories.get(i);
-      final String factoryName = factoryNames.get(i);
+
+      for (Supplier<List<T>> factory : listFactories) {
+
+      final String factoryName = factory.get().getClass().getSimpleName();
+
       testBuilder.add(DynamicTest.dynamicTest(testName + " [" + factoryName + "]", () -> {
         List<T> list = factory.get();
         test.accept(list);
