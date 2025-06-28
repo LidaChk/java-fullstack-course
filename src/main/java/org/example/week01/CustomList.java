@@ -14,11 +14,13 @@ public class CustomList<T> implements List<T> {
     private T[] elements;
     private int size;
 
+    @SuppressWarnings("unchecked")
     public CustomList() {
         elements = (T[]) new Object[DEFAULT_CAPACITY];
         size = 0;
     }
 
+    @SuppressWarnings("unchecked")
     public CustomList(int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);

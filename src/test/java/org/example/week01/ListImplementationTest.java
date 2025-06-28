@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("List Implementation Tests - CustomList vs ArrayList")
 class ListImplementationTest {
 
+
   private <T> void testAllLists(Integer capacity, Consumer<List<T>> test) {
     List<Supplier<List<T>>> factories = new ArrayList<>();
     if (capacity == null) {
@@ -31,10 +31,14 @@ class ListImplementationTest {
 
     for (Supplier<List<T>> factory : factories) {
       List<T> list = factory.get();
+      String listName = list.getClass().getSimpleName();
       try {
         test.accept(list);
+        System.out.println("[PASSED] Test successful for " + listName);
       } catch (AssertionError e) {
-        fail("Test failed for " + list.getClass().getSimpleName() + ": " + e.getMessage());
+        throw new AssertionError("Test failed for " + listName + ": " + e.getMessage(), e);
+      } catch (Exception e) {
+        throw new RuntimeException("Unexpected error for " + listName + ": " + e.getMessage(), e);
       }
     }
   }
@@ -727,6 +731,102 @@ class ListImplementationTest {
         assertEquals(1, list.size());
         assertEquals("new_element", list.get(0));
       });
+    }
+  }
+
+  @Nested
+  @DisplayName("Generic Type Safety Tests")
+  class GenericTypeTests {
+
+    @Test
+    @DisplayName("Should work with Integer type")
+    void shouldWorkWithIntegerType() {
+      testAllLists((List<Integer> list) -> {
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(3, list.get(2));
+
+        list.set(1, 5);
+        assertEquals(5, list.get(1));
+
+        list.remove(0);
+        assertEquals(2, list.size());
+        assertEquals(5, list.get(0));
+      });
+    }
+
+    @Test
+    @DisplayName("Should work with String type")
+    void shouldWorkWithStringType() {
+      testAllLists((List<String> list) -> {
+        list.add("first");
+        list.add("second");
+        list.add("third");
+        assertEquals("first", list.get(0));
+        assertEquals("second", list.get(1));
+        assertEquals("third", list.get(2));
+
+        list.set(1, "fifth");
+        assertEquals("fifth", list.get(1));
+
+        list.remove(0);
+        assertEquals(2, list.size());
+        assertEquals("fifth", list.get(0));
+      });
+    }
+
+    @Test
+    @DisplayName("Should work with custom object type")
+    void shouldWorkWithCustomObjectType() {
+
+      testAllLists((List<Person> list) -> {
+
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Bob");
+
+        list.add(p1);
+        list.add(p2);
+
+        assertEquals(p1, list.get(0));
+        assertEquals(p2, list.get(1));
+
+        list.set(0, p2);
+        assertEquals(p2, list.get(0));
+
+        list.remove(1);
+        assertEquals(1, list.size());
+        assertEquals(p2, list.get(0));
+      });
+    }
+  }
+
+  static class Person {
+    private final String name;
+
+    public Person(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (!(obj instanceof Person))
+        return false;
+      return name.equals(((Person) obj).name);
+    }
+
+    @Override
+    public int hashCode() {
+      return name.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return "Person{name='" + name + "'}";
     }
   }
 }
