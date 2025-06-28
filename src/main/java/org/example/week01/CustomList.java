@@ -9,7 +9,7 @@ import java.util.ListIterator;
 public class CustomList<T> implements List<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
-    private static final int GROWTH_FACTOR = 2;
+    private static final double GROWTH_FACTOR = 1.5;
 
     private T[] elements;
     private int size;
@@ -35,7 +35,7 @@ public class CustomList<T> implements List<T> {
     }
 
     private void resize() {
-        int newCapacity = elements.length == 0 ? 1 : elements.length * GROWTH_FACTOR;
+        int newCapacity = elements.length == 0 ? 1 : (int) (elements.length * GROWTH_FACTOR) + 1;
         elements = Arrays.copyOf(elements, newCapacity);
     }
 
