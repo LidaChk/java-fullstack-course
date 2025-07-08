@@ -12,8 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+
 class FibonacciBenchmarkTest {
-    private static final int[] TEST_INPUTS = { 10, 20, 30, 35, 40 };
+    private static final int[] TEST_INPUTS = {10, 20, 30, 35, 40};
 
     private static Map<String, Map<Integer, Long>> executionTimes;
     private static Map<String, Map<Integer, Long>> memoryUsages;
@@ -40,18 +41,33 @@ class FibonacciBenchmarkTest {
 
     @BeforeEach
     void setUp() {
-        Runtime.getRuntime().gc();
+        System.gc();
     }
 
     @AfterEach
     void tearDown() {
-        Runtime.getRuntime().gc();
+        System.gc();
     }
 
     @AfterAll
     static void tearDownAll() {
         printPerformanceResults();
         printMemoryUsageResults();
+    }
+
+
+    @Test
+    @DisplayName("Test Fibonacci memory consumption benchmark for different inputs")
+    void memoryBenchmark() {
+        for (int n : TEST_INPUTS) {
+            for (Map.Entry<String, Function<Integer, Long>> task : tasks.entrySet()) {
+                String key = task.getKey();
+                Function<Integer, Long> func = task.getValue();
+
+                long memory = measureMemoryUsage(() -> func.apply(n));
+                memoryUsages.get(key).put(n, memory);
+            }
+        }
     }
 
     @Test
@@ -68,19 +84,6 @@ class FibonacciBenchmarkTest {
         }
     }
 
-    @Test
-    @DisplayName("Test Fibonacci memory consumption benchmark for different inputs")
-    void memoryBenchmark() {
-        for (int n : TEST_INPUTS) {
-            for (Map.Entry<String, Function<Integer, Long>> task : tasks.entrySet()) {
-                String key = task.getKey();
-                Function<Integer, Long> func = task.getValue();
-
-                long memory = measureMemoryUsage(() -> func.apply(n));
-                memoryUsages.get(key).put(n, memory);
-            }
-        }
-    }
 
     private static void printResults(Map<String, Map<Integer, Long>> resultMap, String units) {
         for (int n : TEST_INPUTS) {
@@ -121,7 +124,6 @@ class FibonacciBenchmarkTest {
     }
 
     private long measureExecutionTime(Runnable task) {
-        System.gc();
 
         long startTime = System.currentTimeMillis();
         task.run();
@@ -132,7 +134,7 @@ class FibonacciBenchmarkTest {
 
     private long measureMemoryUsage(Runnable task) {
 
-        Runtime.getRuntime().gc();
+        System.gc();
 
         long beforeMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         task.run();
