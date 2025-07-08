@@ -1,4 +1,4 @@
-package org.example.week02.lombokPractice;
+package org.example.week02.lombokpractice;
 
 import lombok.Getter;
 import lombok.Setter;

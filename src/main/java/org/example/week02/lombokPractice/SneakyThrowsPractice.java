@@ -1,6 +1,5 @@
-package org.example.week02.lombokPractice;
+package org.example.week02.lombokpractice;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
