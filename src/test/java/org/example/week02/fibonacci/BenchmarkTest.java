@@ -119,18 +119,13 @@ public class BenchmarkTest {
 
     private long measureMemoryUsage(Runnable task) {
 
-        // Прогрев
-        for (int i = 0; i < 5; i++) {
-            task.run();
-        }
-
         System.gc();
         long beforeMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         task.run();
 
         long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-        return (afterMemory - beforeMemory) / 1024;
+        return (afterMemory - beforeMemory) ;/// 1024;
     }
 
 }

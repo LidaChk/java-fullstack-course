@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CorrectnessTest {
+class CorrectnessTest {
 
     private static final int[] TEST_INPUTS = { 0, 1, 2, 5, 10, 20, 30, 35, 40 };
     private static final long[] EXPECTED_OUTPUTS = { 0, 1, 1, 5, 55, 6765, 832040, 9227465, 102334155 };

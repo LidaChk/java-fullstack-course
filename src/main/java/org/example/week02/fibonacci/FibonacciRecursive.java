@@ -1,13 +1,6 @@
 package org.example.week02.fibonacci;
 
 public class FibonacciRecursive {
-
-    public static void main(String[] args) {
-        int n = 9;
-        System.out.println("fibonacciRecursive(" + n + ") = " + fibonacciRecursive(n));
-
-    }
-
     /**
      * Recursive implementation of Fibonacci sequence
      * Time Complexity: O(2^n) from binary tree.

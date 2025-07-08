@@ -1,43 +1,44 @@
 package org.example.week02.fibonacci;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FibonacciMemoized {
-
-    public static void main(String[] args) {
-        int n = 9;
-        System.out.println("fibonacciMemoized(" + n + ") = " + fibonacciMemoized(n));
-
-    }
-
     /**
      * Memoized implementation of Fibonacci sequence
-     * Time Complexity: O(n) - single loop from 0 to n
-     * Space Complexity: O(n) - n size Array
+     * Time Complexity: O(n) - single calculation from 0 to n
+     * Space Complexity: O(n) - n size HashMap and n size stack
      *
      * Explanation: By caching intermediate results, we avoid
      * redundant calculations. Each number from 0 to n is
      * calculated exactly once.
      */
 
-    private static long[] cache;
+
 
     public static long fibonacciMemoized(int n) {
 
         if (n < 0)
             throw new IllegalArgumentException();
 
+        Map<Integer, Long> cache = new HashMap<>();
+        return fibonacciMemoizedHelper(n, cache);
+
+    }
+
+    private static long fibonacciMemoizedHelper(int n, Map<Integer, Long> cache) {
+
         if (n < 2) {
             return n;
         }
 
-        cache = new long[n + 1];
-        for (int i = 0; i <= n; i++) {
-            if (i == 0 || i == 1) {
-                cache[i] = i;
-            } else {
-                cache[i] = cache[i - 1] + cache[i - 2];
-            }
+        if (cache.containsKey(n)) {
+            return cache.get(n);
         }
-        return cache[n];
+
+        long result = fibonacciMemoizedHelper(n - 1, cache) + fibonacciMemoizedHelper(n - 2, cache);
+        cache.put(n, result);
+        return result;
     }
 
 }

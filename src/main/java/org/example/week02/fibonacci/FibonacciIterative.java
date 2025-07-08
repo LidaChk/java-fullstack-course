@@ -1,13 +1,6 @@
 package org.example.week02.fibonacci;
 
 public class FibonacciIterative {
-
-    public static void main(String[] args) {
-        int n = 9;
-        System.out.println("fibonacciIterative(" + n + ") = " + fibonacciIterative(n));
-
-    }
-
     /**
      * Iterative implementation of Fibonacci sequence
      * Time Complexity: O(n) - single loop from 0 to n
