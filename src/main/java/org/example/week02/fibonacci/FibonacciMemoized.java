@@ -7,7 +7,7 @@ public class FibonacciMemoized {
     /**
      * Memoized implementation of Fibonacci sequence
      * Time Complexity: O(n) - single calculation from 0 to n
-     * Space Complexity: O(n) - n size HashMap and n size stack
+     * Space Complexity: O(n) - n size array and n size stack
      * <p>
      * Explanation: By caching intermediate results, we avoid
      * redundant calculations. Each number from 0 to n is
