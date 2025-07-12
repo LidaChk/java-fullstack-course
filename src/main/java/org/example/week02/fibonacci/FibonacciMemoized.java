@@ -14,30 +14,32 @@ public class FibonacciMemoized {
      * calculated exactly once.
      */
 
+    private static Map<Integer, Long> cache = new HashMap<>();
+
 
     public static long fibonacciMemoized(int n) {
 
         if (n < 0)
             throw new IllegalArgumentException();
 
-        Long[] cache = new Long[n + 1];
-        return fibonacciMemoizedHelper(n, cache);
+        return fibonacciMemoizedHelper(n);
 
     }
 
-    private static long fibonacciMemoizedHelper(int n, Long[] cache) {
+    private static long fibonacciMemoizedHelper(int n) {
 
         if (n < 2) {
             return n;
         }
 
-        if (cache[n] != null) {
-            return cache[n];
+        if (cache.containsKey(n)) {
+            return cache.get(n);
         }
 
-        long result = fibonacciMemoizedHelper(n - 1, cache) + fibonacciMemoizedHelper(n - 2, cache);
-        cache[n] = result;
+        long result = fibonacciMemoizedHelper(n - 1) + fibonacciMemoizedHelper(n - 2);
+        cache.put(n, result);
         return result;
+
     }
 
 }
