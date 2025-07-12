@@ -7,15 +7,17 @@ public class FibonacciMemoized {
     /**
      * Memoized implementation of Fibonacci sequence
      * Time Complexity: O(n) - single calculation from 0 to n
-     * Space Complexity: O(n) - n size array and n size stack
+     * Space Complexity: O(n) - n size hashmap and n size stack
      * <p>
      * Explanation: By caching intermediate results, we avoid
      * redundant calculations. Each number from 0 to n is
      * calculated exactly once.
      */
 
-    private static Map<Integer, Long> cache = new HashMap<>();
+    private static final Map<Integer, Long> cache = new HashMap<>();
 
+    private FibonacciMemoized() {
+    }
 
     public static long fibonacciMemoized(int n) {
 

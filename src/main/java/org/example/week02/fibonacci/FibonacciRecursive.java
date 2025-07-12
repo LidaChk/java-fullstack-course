@@ -11,6 +11,10 @@ public class FibonacciRecursive {
      * a binary tree of calls with height n. The same subproblems are
      * solved multiple times, leading to exponential time complexity.
      */
+
+    private FibonacciRecursive() {
+    }
+
     public static long fibonacciRecursive(int n) {
 
         if (n < 0)

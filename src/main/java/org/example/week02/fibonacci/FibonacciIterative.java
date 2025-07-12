@@ -1,6 +1,7 @@
 package org.example.week02.fibonacci;
 
 public class FibonacciIterative {
+
     /**
      * Iterative implementation of Fibonacci sequence
      * Time Complexity: O(n) - single loop from 0 to n
@@ -9,6 +10,10 @@ public class FibonacciIterative {
      * Explanation: Uses bottom-up approach with only two variables
      * to track previous values, eliminating recursion overhead.
      */
+
+    private FibonacciIterative() {
+    }
+
     public static long fibonacciIterative(int n) {
 
         if (n < 0)
