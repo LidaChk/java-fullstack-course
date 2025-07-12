@@ -15,12 +15,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import org.example.utils.BenchmarkUtils;
 
 class FibonacciBenchmarkTest {
 
     private static final int[] TEST_INPUTS = { 10, 20, 30, 35, 40 };
     private static final Map<String, Map<Integer, Long>> executionTimes = new HashMap<>();
-    private static final Map<String, Map<Integer, Long>> memoryUsages = new HashMap<>();
+    private static final Map<String, Map<Integer, Double>> memoryUsages = new HashMap<>();
     private static final LinkedHashMap<String, Function<Integer, Long>> tasks = new LinkedHashMap<>();
 
 
@@ -67,7 +68,7 @@ class FibonacciBenchmarkTest {
             String key = task.getKey();
             Function<Integer, Long> func = task.getValue();
 
-            long memory = measureMemoryUsage(() -> func.apply(n));
+            double memory = BenchmarkUtils.measureTaskMemoryUsageMB(() -> func.apply(n));
             memoryUsages.get(key).put(n, memory);
         }
     }
@@ -81,14 +82,14 @@ class FibonacciBenchmarkTest {
             String key = task.getKey();
             Function<Integer, Long> func = task.getValue();
 
-            long time = measureExecutionTime(() -> func.apply(n));
+            long time = BenchmarkUtils.measureTaskExecutionTimeMS(() -> func.apply(n));
             executionTimes.get(key).put(n, time);
         }
 
     }
 
 
-    private static void printResults(Map<String, Map<Integer, Long>> resultMap, String units) {
+    private static <T> void printResults(Map<String, Map<Integer, T>> resultMap, String units) {
         for (int n : TEST_INPUTS) {
             Object[] allArgs = new Object[tasks.size() + 1];
 
@@ -96,11 +97,19 @@ class FibonacciBenchmarkTest {
             allArgs[i] = n;
             for (Map.Entry<String, Function<Integer, Long>> task : tasks.entrySet()) {
                 String key = task.getKey();
-                allArgs[++i] = resultMap.get(key).get(n) + " " + units;
+                T value = resultMap.get(key).get(n);
+
+                if (value instanceof Double || value instanceof Float) {
+                    allArgs[++i] = String.format("%.3f %s", ((Number) value).doubleValue(), units);
+                } else {
+                    allArgs[++i] = ((Number) value).longValue() + " " + units;
+                }
             }
             System.out.printf("%-5d | %-12s | %-12s | %-12s%n", allArgs);
         }
     }
+
+
 
     private static void printPerformanceResults() {
         printHeader("⏱️ PERFORMANCE BENCHMARK RESULTS");
@@ -109,7 +118,7 @@ class FibonacciBenchmarkTest {
 
     private static void printMemoryUsageResults() {
         printHeader("\n🧠 MEMORY USAGE ANALYSIS");
-        printResults(memoryUsages, "KB");
+        printResults(memoryUsages, "mb");
     }
 
     private static void printHeader(String title) {
@@ -124,27 +133,6 @@ class FibonacciBenchmarkTest {
 
         System.out.printf("%-5s | %-12s | %-12s | %-12s%n", argsArray);
         System.out.println("------------------------------------------------");
-    }
-
-    private long measureExecutionTime(Runnable task) {
-
-        long startTime = System.currentTimeMillis();
-        task.run();
-        long endTime = System.currentTimeMillis();
-
-        return endTime - startTime;
-    }
-
-    private long measureMemoryUsage(Runnable task) {
-
-        System.gc();
-
-        long beforeMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        task.run();
-
-        long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-        return (afterMemory - beforeMemory) / 1024;
     }
 
 }
