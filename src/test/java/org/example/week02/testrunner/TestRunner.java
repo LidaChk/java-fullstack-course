@@ -1,12 +1,13 @@
 package org.example.week02.testrunner;
 
+import org.example.week02.testrunner.annotation.AfterEach;
+import org.example.week02.testrunner.annotation.BeforeEach;
+import org.example.week02.testrunner.annotation.Test;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.example.week02.testrunner.annotation.Test;
-import org.example.week02.testrunner.annotation.BeforeEach;
-import org.example.week02.testrunner.annotation.AfterEach;
+import java.util.concurrent.*;
 
 public class TestRunner {
     private int totalTests = 0;
@@ -71,19 +72,31 @@ public class TestRunner {
         System.out.println("Tests discovered in " + testClass.getSimpleName() + ": " + classTests);
     }
 
-    private void runTestMethod(Object instance, Method method) {
-        String testName = instance.getClass().getSimpleName() + "." + method.getName();
-        Test testAnnotation = method.getAnnotation(Test.class);
+    private void runTestMethod(Object instance, Method testMethod) {
+        String testName = instance.getClass().getSimpleName() + "." + testMethod.getName();
+        Test testAnnotation = testMethod.getAnnotation(Test.class);
         String description = testAnnotation.description();
+        long timeout = testAnnotation.timeout();
         long startTime = System.currentTimeMillis();
 
         try {
-            method.setAccessible(true);
-            method.invoke(instance);
-            long duration = System.currentTimeMillis() - startTime;
-            addResultLine(true, testName, duration, description);
-            testResults.add("✓ " + testName + " (" + duration + "ms)");
-            passedTests++;
+            List<Method> beforeMethods = getMethodsAnnotatedWith(instance.getClass(), BeforeEach.class);
+            List<Method> afterMethods = getMethodsAnnotatedWith(instance.getClass(), AfterEach.class);
+
+            invokeMethods(beforeMethods, instance);
+
+            if (timeout > 0) {
+                runTestMethodWithTimeout(instance, testMethod, timeout, testName, description, startTime);
+            } else {
+                testMethod.setAccessible(true);
+                testMethod.invoke(instance);
+                long duration = System.currentTimeMillis() - startTime;
+                addResultLine(true, testName, duration, description);
+                passedTests++;
+            }
+
+            invokeMethods(afterMethods, instance);
+
         } catch (Exception e) {
             long duration = System.currentTimeMillis() - startTime;
             Throwable cause = e.getCause();
@@ -142,7 +155,7 @@ public class TestRunner {
     }
 
     private List<Method> getMethodsAnnotatedWith(Class<?> cls,
-            Class<? extends java.lang.annotation.Annotation> annotation) {
+                                                 Class<? extends java.lang.annotation.Annotation> annotation) {
         List<Method> methods = new ArrayList<>();
         Class<?> current = cls;
 
@@ -162,6 +175,37 @@ public class TestRunner {
         for (Method method : methods) {
             method.setAccessible(true);
             method.invoke(instance);
+        }
+    }
+
+    private void runTestMethodWithTimeout(Object instance, Method method, long timeout, String testName,
+                                          String description, long startTime) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<?> future = executor.submit(() -> {
+            try {
+                method.invoke(instance);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        try {
+            future.get(timeout, TimeUnit.MILLISECONDS);
+            long duration = System.currentTimeMillis() - startTime;
+            addResultLine(true, testName, duration, description);
+            passedTests++;
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            long duration = System.currentTimeMillis() - startTime;
+            addResultLine(false, testName, duration, "Test timed out after " + timeout + "ms");
+            failedTests++;
+        } catch (Exception e) {
+            long duration = System.currentTimeMillis() - startTime;
+            addResultLine(false, testName, duration, e.getCause().getMessage());
+            e.printStackTrace();
+            failedTests++;
+        } finally {
+            executor.shutdownNow();
         }
     }
 
