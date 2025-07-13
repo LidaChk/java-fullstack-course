@@ -14,11 +14,19 @@ public class TestRunner {
     private final List<String> testResults = new ArrayList<>();
 
     public void runTests(String packageName) throws Exception {
-        List<Class<?>> testClasses = TestFinder.findClasses(packageName);
+        List<Class<?>> allClasses = ClassFinder.findClasses(packageName);
+        List<Class<?>> testClasses = new ArrayList<>();
+
+        for (Class<?> cls : allClasses) {
+            if (!getAllTestMethods(cls).isEmpty()) {
+                testClasses.add(cls);
+            }
+        }
 
         System.out.println("\n=== Custom Test Runner Results ===");
         System.out.println("Package: " + packageName);
-        System.out.println("Classes scanned: " + testClasses.size());
+        System.out.println("Classes scanned: " + allClasses.size());
+        System.out.println("Test classes found: " + testClasses.size());
 
         for (Class<?> testClass : testClasses) {
             runTestClass(testClass);
@@ -29,14 +37,12 @@ public class TestRunner {
 
     private void runTestClass(Class<?> testClass) throws Exception {
         Object testInstance = testClass.getDeclaredConstructor().newInstance();
-        Method[] methods = testClass.getDeclaredMethods();
+        List<Method> testMethods = getAllTestMethods(testClass);
 
-        int classTests = 0;
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Test.class)) {
-                classTests++;
-                runTestMethod(testInstance, method);
-            }
+        int classTests = testMethods.size();
+
+        for (Method method : testMethods) {
+            runTestMethod(testInstance, method);
         }
 
         System.out.println("Tests discovered in " + testClass.getSimpleName() + ": " + classTests);
@@ -54,22 +60,36 @@ public class TestRunner {
             passedTests++;
         } catch (Exception e) {
             long duration = System.currentTimeMillis() - startTime;
-
             Throwable cause = e.getCause();
 
             if (cause instanceof AssertionError) {
                 testResults.add("✗ " + testName + " (" + duration + "ms) - AssertionFailed");
             } else {
-
                 String failureMsg = cause != null ? cause.getClass().getSimpleName() : "Exception";
-                e.printStackTrace();
                 testResults.add("✗ " + testName + " (" + duration + "ms) - " + failureMsg);
+                e.printStackTrace();
             }
             failedTests++;
         }
 
         totalTests++;
         totalExecutionTime += System.currentTimeMillis() - startTime;
+    }
+
+    private List<Method> getAllTestMethods(Class<?> cls) {
+        List<Method> methods = new ArrayList<>();
+        Class<?> current = cls;
+
+        while (current != null && current != Object.class) {
+            for (Method method : current.getDeclaredMethods()) {
+                if (method.isAnnotationPresent(Test.class)) {
+                    methods.add(method);
+                }
+            }
+            current = current.getSuperclass();
+        }
+
+        return methods;
     }
 
     private void printStatistics() {

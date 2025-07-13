@@ -4,7 +4,7 @@ import org.example.week02.testrunner.annotation.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SampleTest {
+public class BaseSampleTest {
 
     @Test
     void passedTest() {
