@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.example.week02.testrunner.annotation.Test;
+import org.example.week02.testrunner.annotation.BeforeEach;
+import org.example.week02.testrunner.annotation.AfterEach;
 
 public class TestRunner {
     private int totalTests = 0;
@@ -53,12 +55,17 @@ public class TestRunner {
 
     private void runTestClass(Class<?> testClass) throws Exception {
         Object testInstance = testClass.getDeclaredConstructor().newInstance();
+        List<Method> beforeMethods = getMethodsAnnotatedWith(testClass, BeforeEach.class);
+        List<Method> afterMethods = getMethodsAnnotatedWith(testClass, AfterEach.class);
         List<Method> testMethods = getAllTestMethods(testClass);
 
         int classTests = testMethods.size();
 
         for (Method method : testMethods) {
+
+            invokeMethods(beforeMethods, testInstance);
             runTestMethod(testInstance, method);
+            invokeMethods(afterMethods, testInstance);
         }
 
         System.out.println("Tests discovered in " + testClass.getSimpleName() + ": " + classTests);
@@ -131,6 +138,30 @@ public class TestRunner {
         if (totalTests > 0) {
             double successRate = (double) passedTests / totalTests * 100;
             System.out.printf("Success rate: %.1f%%\n", successRate);
+        }
+    }
+
+    private List<Method> getMethodsAnnotatedWith(Class<?> cls,
+            Class<? extends java.lang.annotation.Annotation> annotation) {
+        List<Method> methods = new ArrayList<>();
+        Class<?> current = cls;
+
+        while (current != null && current != Object.class) {
+            for (Method method : current.getDeclaredMethods()) {
+                if (method.isAnnotationPresent(annotation)) {
+                    methods.add(method);
+                }
+            }
+            current = current.getSuperclass();
+        }
+
+        return methods;
+    }
+
+    private void invokeMethods(List<Method> methods, Object instance) throws Exception {
+        for (Method method : methods) {
+            method.setAccessible(true);
+            method.invoke(instance);
         }
     }
 
