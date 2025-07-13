@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseSampleTest {
 
-    @Test
+    @Test(description = "Test passed assertion.")
     void passedTest() {
         var expected = 1;
         var result = 1;
         assertEquals(expected, result);
     }
 
-    @Test
+    @Test(description = "Test failed assertion.")
     void failedTest() {
         var expected = 1;
         var result = -1;

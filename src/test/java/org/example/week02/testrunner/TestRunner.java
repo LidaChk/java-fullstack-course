@@ -13,6 +13,22 @@ public class TestRunner {
     private long totalExecutionTime = 0;
     private final List<String> testResults = new ArrayList<>();
 
+    public static void main(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.err.println("Usage: TestRunner <packageName>");
+            System.exit(1);
+        }
+
+        try {
+            TestRunner runner = new TestRunner();
+            runner.runTests(args[0]);
+        } catch (Exception e) {
+            System.err.println("Test execution failed: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
     public void runTests(String packageName) throws Exception {
         List<Class<?>> allClasses = ClassFinder.findClasses(packageName);
         List<Class<?>> testClasses = new ArrayList<>();
@@ -50,12 +66,15 @@ public class TestRunner {
 
     private void runTestMethod(Object instance, Method method) {
         String testName = instance.getClass().getSimpleName() + "." + method.getName();
+        Test testAnnotation = method.getAnnotation(Test.class);
+        String description = testAnnotation.description();
         long startTime = System.currentTimeMillis();
 
         try {
             method.setAccessible(true);
             method.invoke(instance);
             long duration = System.currentTimeMillis() - startTime;
+            addResultLine(true, testName, duration, description);
             testResults.add("✓ " + testName + " (" + duration + "ms)");
             passedTests++;
         } catch (Exception e) {
@@ -63,10 +82,10 @@ public class TestRunner {
             Throwable cause = e.getCause();
 
             if (cause instanceof AssertionError) {
-                testResults.add("✗ " + testName + " (" + duration + "ms) - AssertionFailed");
+                addResultLine(false, testName, duration, description);
             } else {
                 String failureMsg = cause != null ? cause.getClass().getSimpleName() : "Exception";
-                testResults.add("✗ " + testName + " (" + duration + "ms) - " + failureMsg);
+                addResultLine(false, testName, duration, failureMsg + ": " + cause.getMessage());
                 e.printStackTrace();
             }
             failedTests++;
@@ -74,6 +93,13 @@ public class TestRunner {
 
         totalTests++;
         totalExecutionTime += System.currentTimeMillis() - startTime;
+    }
+
+    private void addResultLine(Boolean passed, String testName, long duration, String description) {
+        String result = passed ? "✓" : "✗";
+        String resultLine = String.format("%s %s (%dms) - %s", result,
+                testName, duration, description.isEmpty() ? "No description" : description);
+        testResults.add(resultLine);
     }
 
     private List<Method> getAllTestMethods(Class<?> cls) {
@@ -107,4 +133,5 @@ public class TestRunner {
             System.out.printf("Success rate: %.1f%%\n", successRate);
         }
     }
+
 }
