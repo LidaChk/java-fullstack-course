@@ -36,9 +36,10 @@ public class TestRunner {
         List<Class<?>> allClasses = ClassFinder.findClasses(packageName);
         List<Class<?>> testClasses = new ArrayList<>();
 
-        for (Class<?> cls : allClasses) {
-            if (!getAllTestMethods(cls).isEmpty()) {
-                testClasses.add(cls);
+        for (Class<?> testClass : allClasses) {
+            List<Method> testMethods = getAllTestMethods(testClass);
+            if (!testMethods.isEmpty()) {
+                runTestClass(testClass, testMethods);
             }
         }
 
@@ -47,18 +48,13 @@ public class TestRunner {
         System.out.println("Classes scanned: " + allClasses.size());
         System.out.println("Test classes found: " + testClasses.size());
 
-        for (Class<?> testClass : testClasses) {
-            runTestClass(testClass);
-        }
-
         printStatistics();
     }
 
-    private void runTestClass(Class<?> testClass) throws Exception {
+    private void runTestClass(Class<?> testClass, List<Method> testMethods) throws Exception {
         Object testInstance = testClass.getDeclaredConstructor().newInstance();
         List<Method> beforeMethods = getMethodsAnnotatedWith(testClass, BeforeEach.class);
         List<Method> afterMethods = getMethodsAnnotatedWith(testClass, AfterEach.class);
-        List<Method> testMethods = getAllTestMethods(testClass);
 
         int classTests = testMethods.size();
 
