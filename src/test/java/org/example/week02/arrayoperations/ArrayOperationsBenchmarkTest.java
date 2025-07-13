@@ -6,8 +6,9 @@ import org.example.utils.BenchmarkUtils;
 
 class ArrayOperationsBenchmarkTest {
 
-  private static final int[] ARRAY_SIZES = { 1_000, 10_000, 100_000, 1_000_000, 10_000_000 };
-  private static final int[] SHIFT_POSITIONS = { 1, 10, 100, 1000, 10_000 };
+  private static final int[] ARRAY_SIZES = { 1_000, 10_000, 100_000, 1_000_000 };
+  private static final int[] SHIFT_POSITIONS = { 1, 10, 100, 1000 };
+  private static final int NUM_ITERATIONS = 100;
   private static final String OUTPUT_FORMAT = "%-15s | %-15s | %-25s | %-25s%n";
   private static final String OUTPUT_LINE = "---------------------------------------------------------------------------------";
 
@@ -37,12 +38,14 @@ class ArrayOperationsBenchmarkTest {
 
         int[] originalArray = createArray(size);
         int[] arrayForSystemCopy = Arrays.copyOf(originalArray, originalArray.length);
-        long systemCopyTime = BenchmarkUtils
-            .measureTaskExecutionTimeMS(() -> ArrayOperations.shiftLeftSystemCopy(arrayForSystemCopy, positions));
+        double systemCopyTime = BenchmarkUtils
+            .measureTaskExecutionTimeMS(() -> ArrayOperations.shiftLeftSystemCopy(arrayForSystemCopy, positions),
+                NUM_ITERATIONS);
 
         int[] arrayForManualLoop = Arrays.copyOf(originalArray, originalArray.length);
-        long manualLoopTime = BenchmarkUtils
-            .measureTaskExecutionTimeMS(() -> ArrayOperations.shiftLeftManualLoop(arrayForManualLoop, positions));
+        double manualLoopTime = BenchmarkUtils
+            .measureTaskExecutionTimeMS(() -> ArrayOperations.shiftLeftManualLoop(arrayForManualLoop, positions),
+                NUM_ITERATIONS);
 
         System.out.printf(OUTPUT_FORMAT, size, positions, systemCopyTime, manualLoopTime);
       }

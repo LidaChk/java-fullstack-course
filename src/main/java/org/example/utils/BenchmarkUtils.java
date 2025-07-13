@@ -15,6 +15,15 @@ public final class BenchmarkUtils {
     return endTime - startTime;
   }
 
+  public static double measureTaskExecutionTimeMS(Runnable task, int iterations) {
+    long startTime = System.currentTimeMillis();
+    for (int i = 0; i < iterations; i++) {
+      task.run();
+    }
+    long endTime = System.currentTimeMillis();
+    return (endTime - startTime) / (double) iterations;
+  }
+
   public static double measureTaskMemoryUsageMB(Runnable task) {
     long memoryBefore = getUsedMemoryBefore();
     task.run();
