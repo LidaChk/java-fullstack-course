@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.example.utils.BenchmarkUtils;
+import org.example.utils.BenchmarkUtils.BenchmarkResult;
+
 public class PerformanceBenchmark {
 
   private static final int BULK_ADDITION_SIZE = 1_000_000;
@@ -60,65 +63,30 @@ public class PerformanceBenchmark {
   }
 
   private static BenchmarkResult measureBulkAddition(Supplier<List<Integer>> supplier) {
-    long memoryBefore = getUsedMemoryBefore();
-
-    long startTime = System.currentTimeMillis();
-    List<Integer> list = supplier.get();
-
-    for (int i = 0; i < BULK_ADDITION_SIZE; i++) {
-      list.add(i);
-    }
-
-    long endTime = System.currentTimeMillis();
-    long memoryAfter = getUsedMemoryAfter();
-
-    double memoryMB = bytesToMB(memoryAfter - memoryBefore);
-
-    return new BenchmarkResult(endTime - startTime, memoryMB);
+    return BenchmarkUtils.measurePerformance(() -> {
+      List<Integer> list = supplier.get();
+      for (int i = 0; i < BULK_ADDITION_SIZE; i++) {
+        list.add(i);
+      }
+    });
   }
 
   private static BenchmarkResult measureAddRemove(Supplier<List<Integer>> supplier) {
-    List<Integer> list = supplier.get();
-
-    long memoryBefore = getUsedMemoryBefore();
-    long startTime = System.currentTimeMillis();
-
-    for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
-      list.add(i);
-    }
-
-    for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
-      if (!list.isEmpty()) {
-        list.remove(0);
+    return BenchmarkUtils.measurePerformance(() -> {
+      List<Integer> list = supplier.get();
+      for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
+        list.add(i);
       }
-    }
-
-    long endTime = System.currentTimeMillis();
-    long memoryAfter = getUsedMemoryAfter();
-
-    double memoryMB = bytesToMB(memoryAfter - memoryBefore);
-
-    return new BenchmarkResult(endTime - startTime, memoryMB);
-  }
-
-  private static double bytesToMB(long bytes) {
-    return (double) bytes / (1024 * 1024);
-  }
-
-  private static long getUsedMemoryBefore() {
-    Runtime.getRuntime().gc();
-    return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-  }
-
-  private static long getUsedMemoryAfter() {
-    return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+      for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
+        if (!list.isEmpty()) {
+          list.remove(0);
+        }
+      }
+    });
   }
 
   private static void printResult(String listType, BenchmarkResult result) {
     System.out.printf("%-12s Time: %6d ms, Memory: %6.2f MB%n",
         listType + ":", result.timeMs(), result.memoryMB());
-  }
-
-  private record BenchmarkResult(long timeMs, double memoryMB) {
   }
 }
