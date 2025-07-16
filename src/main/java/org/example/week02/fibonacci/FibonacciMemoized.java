@@ -14,7 +14,7 @@ public class FibonacciMemoized {
      * calculated exactly once.
      */
 
-    private static final Map<Integer, Long> cache = new HashMap<>();
+    private final Map<Integer, Long> cache = new HashMap<>();
 
     private FibonacciMemoized() {
     }

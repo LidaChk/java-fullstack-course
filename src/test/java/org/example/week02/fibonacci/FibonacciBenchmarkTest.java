@@ -20,9 +20,9 @@ import org.example.utils.BenchmarkUtils;
 class FibonacciBenchmarkTest {
 
     private static final int[] TEST_INPUTS = { 10, 20, 30, 35, 40 };
-    private static final Map<String, Map<Integer, Long>> executionTimes = new HashMap<>();
-    private static final Map<String, Map<Integer, Double>> memoryUsages = new HashMap<>();
-    private static final LinkedHashMap<String, Function<Integer, Long>> tasks = new LinkedHashMap<>();
+    private final Map<String, Map<Integer, Long>> executionTimes = new HashMap<>();
+    private final Map<String, Map<Integer, Double>> memoryUsages = new HashMap<>();
+    private final LinkedHashMap<String, Function<Integer, Long>> tasks = new LinkedHashMap<>();
 
 
     static Stream<Integer> fibonacciInputs() {
