@@ -1,68 +1,71 @@
 package org.example.week02.fibonacci;
 
+import org.example.utils.BenchmarkUtils;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import java.util.Arrays;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+public class FibonacciBenchmarkTest {
 
-import org.example.utils.BenchmarkUtils;
-
-class FibonacciBenchmarkTest {
-
-    private static final int[] TEST_INPUTS = { 10, 20, 30, 35, 40 };
+    private final int[] TEST_INPUTS = {10, 20, 30, 35, 40};
     private final Map<String, Map<Integer, Long>> executionTimes = new HashMap<>();
     private final Map<String, Map<Integer, Double>> memoryUsages = new HashMap<>();
     private final LinkedHashMap<String, Function<Integer, Long>> tasks = new LinkedHashMap<>();
 
-
-    static Stream<Integer> fibonacciInputs() {
-        return Arrays.stream(TEST_INPUTS).boxed();
+    public static void main(String[] args) {
+        FibonacciBenchmarkTest benchmark = new FibonacciBenchmarkTest();
+        benchmark.runBenchmarks();
     }
-    @BeforeAll
-    static void setUpAll() {
 
+    public FibonacciBenchmarkTest() {
+        initializeTasks();
+        initializeResultMaps();
+    }
+
+    private void initializeTasks() {
         tasks.put("recursive", FibonacciRecursive::fibonacciRecursive);
         tasks.put("memoized", FibonacciMemoized::fibonacciMemoized);
         tasks.put("iterative", FibonacciIterative::fibonacciIterative);
+    }
 
-        for (Map.Entry<String, Function<Integer, Long>> task : tasks.entrySet()) {
-            String key = task.getKey();
+    private void initializeResultMaps() {
+        for (String key : tasks.keySet()) {
             executionTimes.put(key, new HashMap<>());
             memoryUsages.put(key, new HashMap<>());
         }
     }
 
-    @BeforeEach
-    void setUp() {
-        System.gc();
+    private Stream<Integer> getFibonacciInputs() {
+        return Arrays.stream(TEST_INPUTS).boxed();
     }
 
-    @AfterEach
-    void tearDown() {
-        System.gc();
-    }
+    public void runBenchmarks() {
+        setUp();
 
-    @AfterAll
-    static void tearDownAll() {
+        getFibonacciInputs().forEach(n -> {
+            memoryBenchmark(n);
+            performanceBenchmark(n);
+        });
+
+        tearDown();
+        
         printPerformanceResults();
         printMemoryUsageResults();
     }
 
+    private void setUp() {
+        System.gc();
+    }
 
-    @ParameterizedTest(name = "Memory usage for calculating Fibonacci({0})")
-    @MethodSource("fibonacciInputs")
-    @DisplayName("Test Fibonacci memory consumption benchmark")
-    void memoryBenchmark(int n) {
+    private void tearDown() {
+        System.gc();
+    }
+
+    private void memoryBenchmark(int n) {
         System.gc();
         for (Map.Entry<String, Function<Integer, Long>> task : tasks.entrySet()) {
             String key = task.getKey();
@@ -73,10 +76,7 @@ class FibonacciBenchmarkTest {
         }
     }
 
-    @ParameterizedTest(name = "Performance for calculating Fibonacci({0})")
-    @MethodSource("fibonacciInputs")
-    @DisplayName("Test Fibonacci performance benchmark")
-    void performanceBenchmark(int n) {
+    private void performanceBenchmark(int n) {
         System.gc();
         for (Map.Entry<String, Function<Integer, Long>> task : tasks.entrySet()) {
             String key = task.getKey();
@@ -85,11 +85,9 @@ class FibonacciBenchmarkTest {
             long time = BenchmarkUtils.measureTaskExecutionTimeMS(() -> func.apply(n));
             executionTimes.get(key).put(n, time);
         }
-
     }
 
-
-    private static <T> void printResults(Map<String, Map<Integer, T>> resultMap, String units) {
+    private <T> void printResults(Map<String, Map<Integer, T>> resultMap, String units) {
         for (int n : TEST_INPUTS) {
             Object[] allArgs = new Object[tasks.size() + 1];
 
@@ -109,19 +107,17 @@ class FibonacciBenchmarkTest {
         }
     }
 
-
-
-    private static void printPerformanceResults() {
+    private void printPerformanceResults() {
         printHeader("⏱️ PERFORMANCE BENCHMARK RESULTS");
         printResults(executionTimes, "ms");
     }
 
-    private static void printMemoryUsageResults() {
+    private void printMemoryUsageResults() {
         printHeader("\n🧠 MEMORY USAGE ANALYSIS");
         printResults(memoryUsages, "mb");
     }
 
-    private static void printHeader(String title) {
+    private void printHeader(String title) {
         System.out.println(title);
 
         Object[] argsArray = new Object[tasks.size() + 1];
@@ -134,5 +130,4 @@ class FibonacciBenchmarkTest {
         System.out.printf("%-5s | %-12s | %-12s | %-12s%n", argsArray);
         System.out.println("------------------------------------------------");
     }
-
 }

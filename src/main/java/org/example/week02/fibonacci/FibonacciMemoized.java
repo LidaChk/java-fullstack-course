@@ -14,21 +14,21 @@ public class FibonacciMemoized {
      * calculated exactly once.
      */
 
-    private final Map<Integer, Long> cache = new HashMap<>();
-
     private FibonacciMemoized() {
     }
 
     public static long fibonacciMemoized(int n) {
 
+        Map<Integer, Long> cache = new HashMap<>();
+
         if (n < 0)
             throw new IllegalArgumentException();
 
-        return fibonacciMemoizedHelper(n);
+        return fibonacciMemoizedHelper(n, cache);
 
     }
 
-    private static long fibonacciMemoizedHelper(int n) {
+    private static long fibonacciMemoizedHelper(int n, Map<Integer, Long> cache) {
 
         if (n < 2) {
             return n;
@@ -38,7 +38,7 @@ public class FibonacciMemoized {
             return cache.get(n);
         }
 
-        long result = fibonacciMemoizedHelper(n - 1) + fibonacciMemoizedHelper(n - 2);
+        long result = fibonacciMemoizedHelper(n - 1, cache) + fibonacciMemoizedHelper(n - 2, cache);
         cache.put(n, result);
         return result;
 
