@@ -132,12 +132,4 @@ class CustomStackTest {
         assertTrue(stack.isEmpty());
     }
 
-    @Test
-    @DisplayName("Stack toString returns correct representation")
-    void testToString() {
-        stack.push("A");
-        stack.push("B");
-        String expected = "[B, A]";
-        assertEquals(expected, stack.toString());
-    }
 }

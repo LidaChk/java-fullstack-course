@@ -4,6 +4,16 @@ import java.util.EmptyStackException;
 
 public class CustomStack<T> {
     private final CustomLinkedList<T> list = new CustomLinkedList<>();
+    // ========================
+    // Constructors
+    // ========================
+
+    public CustomStack() {
+    }
+
+    // ========================
+    // Stack Methods
+    // ========================
 
     public void push(T item) {
         list.addFirst(item);
@@ -39,7 +49,6 @@ public class CustomStack<T> {
         return list.contains(item);
     }
 
-    @Override
     public String toString() {
         return list.toString();
     }
