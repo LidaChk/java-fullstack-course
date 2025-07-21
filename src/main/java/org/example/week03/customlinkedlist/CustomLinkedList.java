@@ -482,10 +482,15 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
     public String toString() {
         Node<T> current = head.getNext();
         StringBuilder sb = new StringBuilder();
+        sb.append("[");
         while (current != tail) {
             sb.append(current.getData());
             current = current.getNext();
+            if (current != tail) {
+                sb.append(", ");
+            }
         }
+        sb.append("]");
         return sb.toString();
     }
 }
