@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CustomQueueQueueTest {
+class CustomQueueTest {
 
     private CustomQueue<String> queue;
 
