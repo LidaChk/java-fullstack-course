@@ -1,10 +1,17 @@
 package org.example.week03.customlinkedlist;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
- * A custom doubly linked list implementation that implements both List<T> and Deque<T> interfaces.
+ * A custom doubly linked list implementation that implements both List<T> and
+ * Deque<T> interfaces.
  */
 public class CustomLinkedList<T> implements List<T>, Deque<T> {
     private final Node<T> head;
@@ -156,7 +163,6 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
         return result;
     }
 
-
     @Override
     public boolean containsAll(Collection<?> c) {
         if (c.isEmpty()) {
@@ -292,6 +298,7 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private Node<T> current = head.getNext();
+            private Node<T> lastReturned = null;
 
             @Override
             public boolean hasNext() {
@@ -303,9 +310,19 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
                 if (!hasNext()) {
                     throw new NoSuchElementException("No more elements in the list");
                 }
+                lastReturned = current;
                 T data = current.getData();
                 current = current.getNext();
                 return data;
+            }
+
+            @Override
+            public void remove() {
+                if (lastReturned == null) {
+                    throw new IllegalStateException("No element to remove");
+                }
+                removeCurrentAndDecreaseSize(lastReturned);
+                lastReturned = null;
             }
         };
     }
@@ -313,7 +330,6 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
     // ========================
     // Deque<T> Methods
     // ========================
-
 
     @Override
     public boolean offerFirst(T t) {
@@ -413,6 +429,7 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
     public Iterator<T> descendingIterator() {
         return new Iterator<T>() {
             private Node<T> current = tail.getPrev();
+            private Node<T> lastReturned = null;
 
             @Override
             public boolean hasNext() {
@@ -424,9 +441,19 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
                 if (!hasNext()) {
                     throw new NoSuchElementException("No more elements in the list");
                 }
+                lastReturned = current;
                 T data = current.getData();
                 current = current.getPrev();
                 return data;
+            }
+
+            @Override
+            public void remove() {
+                if (lastReturned == null) {
+                    throw new IllegalStateException("No element to remove");
+                }
+                removeCurrentAndDecreaseSize(lastReturned);
+                lastReturned = null;
             }
         };
     }
@@ -456,22 +483,24 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
         throw new UnsupportedOperationException("subList Not supported yet.");
         // What is view??
 
-    /*  if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
-            throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", fromIndex: " + fromIndex + ", Size: " + size);
-        }
-
-        List<T> result = new ArrayList<>();
-
-        Node<T> current = head;
-        for (int i = 0; i <= fromIndex; i++) {
-            current = current.getNext();
-        }
-
-        for (int i = fromIndex; i < toIndex; i++) {
-            result.add(current.getData());
-        }
-        return result;
-        */
+        /*
+         * if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
+         * throw new IndexOutOfBoundsException("fromIndex: " + fromIndex +
+         * ", fromIndex: " + fromIndex + ", Size: " + size);
+         * }
+         *
+         * List<T> result = new ArrayList<>();
+         *
+         * Node<T> current = head;
+         * for (int i = 0; i <= fromIndex; i++) {
+         * current = current.getNext();
+         * }
+         *
+         * for (int i = fromIndex; i < toIndex; i++) {
+         * result.add(current.getData());
+         * }
+         * return result;
+         */
 
     }
 
@@ -494,4 +523,3 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
         return sb.toString();
     }
 }
-
