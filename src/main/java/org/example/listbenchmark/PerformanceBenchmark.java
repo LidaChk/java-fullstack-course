@@ -1,4 +1,4 @@
-package org.example.week01.listbenchmark;
+package org.example.listbenchmark;
 
 import org.example.utils.BenchmarkUtils;
 import org.example.utils.BenchmarkUtils.BenchmarkResult;
