@@ -1,4 +1,6 @@
-package org.example.week03.customlinkedlist;
+package org.example.week03.customqueue;
+
+import org.example.week03.customlinkedlist.CustomLinkedList;
 
 import java.util.*;
 

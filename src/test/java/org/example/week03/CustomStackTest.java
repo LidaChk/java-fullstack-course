@@ -1,6 +1,6 @@
 package org.example.week03;
 
-import org.example.week03.customlinkedlist.CustomStack;
+import org.example.week03.customstack.CustomStack;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

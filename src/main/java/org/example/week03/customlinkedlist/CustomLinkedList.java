@@ -1,13 +1,6 @@
 package org.example.week03.customlinkedlist;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A custom doubly linked list implementation that implements both List<T> and
@@ -296,7 +289,7 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private Node<T> current = head.getNext();
             private Node<T> lastReturned = null;
 
@@ -427,7 +420,7 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
 
     @Override
     public Iterator<T> descendingIterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private Node<T> current = tail.getPrev();
             private Node<T> lastReturned = null;
 
