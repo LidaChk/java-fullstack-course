@@ -3,9 +3,11 @@ package org.example.listbenchmark;
 import org.example.utils.BenchmarkUtils;
 import org.example.utils.BenchmarkUtils.BenchmarkResult;
 import org.example.week01.CustomList;
+import org.example.week03.customdeques.CustomArrayDeque;
 import org.example.week03.customlinkedlist.CustomLinkedList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -15,7 +17,7 @@ public class PerformanceBenchmark {
     private static final int BULK_ADDITION_SIZE = 1_000_000;
     private static final int ADD_REMOVE_SIZE = 10_000;
 
-    private static List<Supplier<List<Integer>>> listFactories;
+    private static List<Supplier<Collection<Integer>>> listFactories;
 
     public static void main(String[] args) {
 
@@ -26,6 +28,7 @@ public class PerformanceBenchmark {
         listFactories.add(CustomList::new);
         listFactories.add(LinkedList::new);
         listFactories.add(CustomLinkedList::new);
+        listFactories.add(CustomArrayDeque::new);
 
         runBulkAdditionTest();
         runAddRemoveTest();
@@ -38,8 +41,8 @@ public class PerformanceBenchmark {
         System.out.println("Bulk Addition Test (1,000,000 elements):");
         System.out.println("----------------------------------------");
 
-        for (Supplier<List<Integer>> factory : listFactories) {
-            List<Integer> list = factory.get();
+        for (Supplier<Collection<Integer>> factory : listFactories) {
+            Collection<Integer> list = factory.get();
             String listType = list.getClass().getSimpleName();
 
             BenchmarkResult result = measureBulkAddition(factory);
@@ -53,8 +56,8 @@ public class PerformanceBenchmark {
         System.out.println("Add/Remove Test (10,000 add + 10,000 remove first):");
         System.out.println("---------------------------------------------------");
 
-        for (Supplier<List<Integer>> factory : listFactories) {
-            List<Integer> list = factory.get();
+        for (Supplier<Collection<Integer>> factory : listFactories) {
+            Collection<Integer> list = factory.get();
             String listType = list.getClass().getSimpleName();
 
             BenchmarkResult result = measureAddRemove(factory);
@@ -65,18 +68,18 @@ public class PerformanceBenchmark {
         System.out.println();
     }
 
-    private static BenchmarkResult measureBulkAddition(Supplier<List<Integer>> supplier) {
+    private static BenchmarkResult measureBulkAddition(Supplier<Collection<Integer>> supplier) {
         return BenchmarkUtils.measurePerformance(() -> {
-            List<Integer> list = supplier.get();
+            Collection<Integer> list = supplier.get();
             for (int i = 0; i < BULK_ADDITION_SIZE; i++) {
                 list.add(i);
             }
         });
     }
 
-    private static BenchmarkResult measureAddRemove(Supplier<List<Integer>> supplier) {
+    private static BenchmarkResult measureAddRemove(Supplier<Collection<Integer>> supplier) {
         return BenchmarkUtils.measurePerformance(() -> {
-            List<Integer> list = supplier.get();
+            Collection<Integer> list = supplier.get();
             for (int i = 0; i < ADD_REMOVE_SIZE; i++) {
                 list.add(i);
             }

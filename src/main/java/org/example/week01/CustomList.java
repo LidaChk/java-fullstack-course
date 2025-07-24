@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 public class CustomList<T> implements List<T> {
 
@@ -104,6 +105,19 @@ public class CustomList<T> implements List<T> {
         size = 0;
     }
 
+    @Override
+    public boolean remove(Object o) {
+        for (int i = 0; i < size; i++) {
+            if (Objects.equals(elements[i], o)) {
+                System.arraycopy(elements, i + 1, elements, i, size - i - 1);
+                size--;
+                elements[size] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
     /***  ***/
     @Override
     public boolean contains(Object o) {
@@ -117,11 +131,6 @@ public class CustomList<T> implements List<T> {
 
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean remove(Object o) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
