@@ -98,8 +98,6 @@ public class CustomArrayDeque<T> implements Deque<T> {
         } else {
             // (index >= nFirst && nAfterLast <= nFirst)
             // [0...afterLast) + [first...index...buffer.length-1]
-            System.out.println("buffer else before " + Arrays.toString(buffer));
-            System.out.println("buffer else after " + Arrays.toString(buffer));
             buffer[nFirst] = null;
             first++;
         }
@@ -125,7 +123,6 @@ public class CustomArrayDeque<T> implements Deque<T> {
         buffer[afterLast] = t;
         afterLast = normalizeIdx(afterLast + 1);
         size++;
-        System.out.println(Arrays.toString(buffer));
     }
 
     @Override
