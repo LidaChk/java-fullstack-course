@@ -1,11 +1,6 @@
 package org.example.week03.customdeques;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class CustomArrayDeque<T> implements Deque<T> {
     private Object[] buffer;
@@ -79,10 +74,12 @@ public class CustomArrayDeque<T> implements Deque<T> {
 
         int nFirst = normalizeIdx(first);
         int nAfterLast = normalizeIdx(afterLast);
+        int nLastIndex = normalizeIdx(afterLast - 1);
 
         if (index == nFirst) return pollFirst();
 
-        if (index == nAfterLast - 1) return pollLast();
+        if (index == nLastIndex)
+            return pollLast();
 
         T removedElement = (T) buffer[index];
 
@@ -91,13 +88,14 @@ public class CustomArrayDeque<T> implements Deque<T> {
         // [first...buffer.length-1]
         if (index < nAfterLast) {
 
-            System.arraycopy(buffer, index + 1, buffer, index, nAfterLast - index - 1);
-            buffer[nAfterLast - 1] = null;
+            System.arraycopy(buffer, index + 1, buffer, index, nLastIndex - index);
+            buffer[nLastIndex] = null;
             afterLast--;
 
         } else {
             // (index >= nFirst && nAfterLast <= nFirst)
             // [0...afterLast) + [first...index...buffer.length-1]
+            System.arraycopy(buffer, nFirst, buffer, nFirst + 1, index - nFirst);
             buffer[nFirst] = null;
             first++;
         }
@@ -454,5 +452,9 @@ public class CustomArrayDeque<T> implements Deque<T> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    public String buffertoString() {
+        return Arrays.toString(buffer);
     }
 }

@@ -385,7 +385,7 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
     @Override
     public boolean offer(T t) {
         addLast(t);
-        return false;
+        return true;
     }
 
     @Override

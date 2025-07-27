@@ -56,7 +56,7 @@ class CustomArrayDequeIteratorTest {
         // Remove one more element to create the gap
         assertEquals("D", smallDeque.pollFirst());
 
-        // Now we have: [K, L, null, null, E, F, G, H, I, J]
+        // [K, L, null, null, E, F, G, H, I, J]
         // first = 4, afterLast = 2
         // Logical order: [E, F, G, H, I, J, K, L]
         return smallDeque;
@@ -120,10 +120,10 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.iterator();
 
-        assertEquals("A", iterator.next()); // Move to first element
-        assertEquals("B", iterator.next()); // Move to second element
+        assertEquals("A", iterator.next());
+        assertEquals("B", iterator.next());
 
-        iterator.remove(); // Remove "B"
+        iterator.remove();
 
         assertEquals(2, deque.size());
         assertEquals("A", deque.peekFirst());
@@ -143,8 +143,8 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.iterator();
 
-        assertEquals("A", iterator.next()); // Move to first element
-        iterator.remove(); // Remove "A"
+        assertEquals("A", iterator.next());
+        iterator.remove();
 
         assertEquals(2, deque.size());
         assertEquals("B", deque.peekFirst());
@@ -166,11 +166,11 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.iterator();
 
-        assertEquals("A", iterator.next()); // Move to first element
-        assertEquals("B", iterator.next()); // Move to second element
-        assertEquals("C", iterator.next()); // Move to third element
+        assertEquals("A", iterator.next());
+        assertEquals("B", iterator.next());
+        assertEquals("C", iterator.next());
 
-        iterator.remove(); // Remove "C"
+        iterator.remove();
 
         assertEquals(2, deque.size());
         assertEquals("A", deque.peekFirst());
@@ -199,26 +199,26 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.iterator();
 
-        iterator.next(); // Move to first element
-        iterator.remove(); // First remove - should work
+        iterator.next();
+        iterator.remove();
 
-        assertThrows(IllegalStateException.class, iterator::remove); // Second remove without next - should fail
+        assertThrows(IllegalStateException.class, iterator::remove);
     }
 
     @Test
     @DisplayName("Iterator should work correctly with wrapped buffer")
     void iterator_WrappedBuffer_IteratesInOrder() {
-        // Fill the buffer to cause wrapping
+
         for (int i = 0; i < 15; i++) {
             deque.addLast("X" + i);
         }
 
-        // Remove some elements from the front to create space at the beginning
+
         for (int i = 0; i < 10; i++) {
             deque.pollFirst();
         }
 
-        // Add more elements to wrap around
+
         deque.addLast("A");
         deque.addLast("B");
         deque.addLast("C");
@@ -370,10 +370,10 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.descendingIterator();
 
-        assertEquals("C", iterator.next()); // Move to last element
-        assertEquals("B", iterator.next()); // Move to middle element
+        assertEquals("C", iterator.next());
+        assertEquals("B", iterator.next());
 
-        iterator.remove(); // Remove "B"
+        iterator.remove();
 
         assertEquals(2, deque.size());
         assertEquals("A", deque.peekFirst());
@@ -393,8 +393,8 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.descendingIterator();
 
-        assertEquals("C", iterator.next()); // Move to last element
-        iterator.remove(); // Remove "C"
+        assertEquals("C", iterator.next());
+        iterator.remove();
 
         assertEquals(2, deque.size());
         assertEquals("A", deque.peekFirst());
@@ -416,11 +416,11 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.descendingIterator();
 
-        assertEquals("C", iterator.next()); // Move to last element
-        assertEquals("B", iterator.next()); // Move to middle element
-        assertEquals("A", iterator.next()); // Move to first element
+        assertEquals("C", iterator.next());
+        assertEquals("B", iterator.next());
+        assertEquals("A", iterator.next());
 
-        iterator.remove(); // Remove "A"
+        iterator.remove();
 
         assertEquals(2, deque.size());
         assertEquals("B", deque.peekFirst());
@@ -449,8 +449,8 @@ class CustomArrayDequeIteratorTest {
 
         Iterator<String> iterator = deque.descendingIterator();
 
-        iterator.next(); // Move to first element (in reverse order)
-        iterator.remove(); // First remove - should work
+        iterator.next();
+        iterator.remove();
 
         assertThrows(IllegalStateException.class, iterator::remove); // Second remove without next - should fail
     }
@@ -458,17 +458,17 @@ class CustomArrayDequeIteratorTest {
     @Test
     @DisplayName("Descending iterator should work correctly with wrapped buffer")
     void descendingIterator_WrappedBuffer_IteratesInReverseOrder() {
-        // Fill the buffer to cause wrapping
+
         for (int i = 0; i < 15; i++) {
             deque.addLast("X" + i);
         }
 
-        // Remove some elements from the front to create space at the beginning
+
         for (int i = 0; i < 10; i++) {
             deque.pollFirst();
         }
 
-        // Add more elements to wrap around
+        
         deque.addLast("A");
         deque.addLast("B");
         deque.addLast("C");
