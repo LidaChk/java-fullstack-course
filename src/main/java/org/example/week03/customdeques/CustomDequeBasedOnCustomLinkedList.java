@@ -191,4 +191,9 @@ public class CustomDequeBasedOnCustomLinkedList<T> implements Deque<T> {
     public Iterator<T> descendingIterator() {
         return linkedList.descendingIterator();
     }
+
+    @Override
+    public String toString() {
+        return linkedList.toString();
+    }
 }

@@ -443,7 +443,7 @@ class CustomArrayDequeTest {
         assertFalse(deque.contains(null));
         deque.addLast(null);
         assertTrue(deque.contains(null));
-        deque.removeLast(); // Remove null
+        deque.removeLast();
         assertFalse(deque.contains(null));
     }
 

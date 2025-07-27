@@ -38,7 +38,9 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
 
     @Override
     public void addFirst(T t) {
-        Node<T> newNode = new Node<>(head, t, head.getNext());
+        Node<T> nextNode = head.getNext();
+        Node<T> newNode = new Node<>(head, t, nextNode);
+        nextNode.setPrev(newNode);
         head.setNext(newNode);
         size++;
     }
@@ -67,7 +69,9 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
             throw new NoSuchElementException();
         }
         Node<T> node = tail.getPrev();
-        tail.setPrev(node.getPrev());
+        Node<T> prevNode = node.getPrev();
+        prevNode.setNext(tail);
+        tail.setPrev(prevNode);
         size--;
         return node.getData();
     }
@@ -385,7 +389,7 @@ public class CustomLinkedList<T> implements List<T>, Deque<T> {
     @Override
     public boolean offer(T t) {
         addLast(t);
-        return false;
+        return true;
     }
 
     @Override
