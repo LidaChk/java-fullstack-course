@@ -114,7 +114,7 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        return get(key) != null;
+        return get(key) != null || keySet().contains(key);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
             Node<K, V> current = bucket;
             while (current != null) {
                 if (!first) sb.append(", ");
-                sb.append(current.key).append("=").append(current.value);
+                sb.append("\"").append(current.key).append("\"").append(":").append(current.value);
                 first = false;
                 current = current.nextInChain;
             }
