@@ -1,4 +1,4 @@
-package org.example.week04.hashmapwithchainingstrategy;
+package org.example.week04;
 
 import org.example.week04.linkedhashmapwithchainingstrategy.LinkedHashMapWithChainingStrategy;
 import org.junit.jupiter.api.DisplayName;

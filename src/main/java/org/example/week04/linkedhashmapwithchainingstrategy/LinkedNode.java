@@ -1,7 +1,7 @@
 package org.example.week04.linkedhashmapwithchainingstrategy;
 
 import lombok.Getter;
-import org.example.week04.hashmapwithchainingstrategy.Node;
+import org.example.week04.Node;
 
 import java.util.Objects;
 

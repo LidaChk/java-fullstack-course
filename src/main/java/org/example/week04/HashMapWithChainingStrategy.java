@@ -1,13 +1,6 @@
-package org.example.week04.hashmapwithchainingstrategy;
+package org.example.week04;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 // ChainingStrategy: Resolves hash collisions by storing modes in linked lists (chains) at each bucket.
 // When collision occurs, new node is added to the list (O(1)).

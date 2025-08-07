@@ -1,4 +1,4 @@
-package org.example.week04.hashmapwithchainingstrategy;
+package org.example.week04;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class Node<K, V> {
     @Override
     public int hashCode() {
         // faster than Object.hash(key, value)
-        // nullsafe
+        // null safe
         return Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 }

@@ -1,6 +1,6 @@
 package org.example.week04.linkedhashmapwithchainingstrategy;
 
-import org.example.week04.hashmapwithchainingstrategy.HashMapWithChainingStrategy;
+import org.example.week04.HashMapWithChainingStrategy;
 
 import java.util.*;
 

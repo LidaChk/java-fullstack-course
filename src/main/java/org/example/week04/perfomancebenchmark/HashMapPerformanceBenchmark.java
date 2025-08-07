@@ -2,7 +2,8 @@ package org.example.week04.perfomancebenchmark;
 
 import org.example.utils.BenchmarkUtils;
 import org.example.utils.BenchmarkUtils.BenchmarkResult;
-import org.example.week04.hashmapwithchainingstrategy.HashMapWithChainingStrategy;
+import org.example.week04.HashMapWithChainingStrategy;
+import org.example.week04.linkedhashmapwithchainingstrategy.LinkedHashMapWithChainingStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,8 @@ public class HashMapPerformanceBenchmark {
 
         mapFactories = new ArrayList<>();
         mapFactories.add(HashMap::new);
-        mapFactories.add(() -> new HashMapWithChainingStrategy<>());
+        mapFactories.add(HashMapWithChainingStrategy::new);
+        mapFactories.add(LinkedHashMapWithChainingStrategy::new);
 
         runBulkPutTest();
         runGetOperationsTest();
