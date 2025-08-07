@@ -17,9 +17,9 @@ public class PerformanceBenchmark {
     private static final int BULK_ADDITION_SIZE = 1_000_000;
     private static final int ADD_REMOVE_SIZE = 10_000;
 
-    private static List<Supplier<Collection<Integer>>> listFactories;
+    private final List<Supplier<Collection<Integer>>> listFactories;
 
-    public static void main(String[] args) {
+    public PerformanceBenchmark() {
 
         System.out.println("=== PERFORMANCE BENCHMARK RESULTS ===\n");
 
@@ -37,7 +37,7 @@ public class PerformanceBenchmark {
 
     }
 
-    private static void runBulkAdditionTest() {
+    private void runBulkAdditionTest() {
         System.out.println("Bulk Addition Test (1,000,000 elements):");
         System.out.println("----------------------------------------");
 
@@ -52,7 +52,7 @@ public class PerformanceBenchmark {
         System.out.println();
     }
 
-    private static void runAddRemoveTest() {
+    private void runAddRemoveTest() {
         System.out.println("Add/Remove Test (10,000 add + 10,000 remove first):");
         System.out.println("---------------------------------------------------");
 
