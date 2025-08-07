@@ -89,14 +89,19 @@ class HashMapWithChainingStrategyTest {
     @Test
     @DisplayName("put() should handle collision by chaining")
     void putShouldHandleCollisionByChaining() {
+        HashMapWithChainingStrategy<CollisionKey, String> map = new HashMapWithChainingStrategy<>();
 
-        HashMapWithChainingStrategy<String, String> map = new HashMapWithChainingStrategy<>();
+        CollisionKey key1 = new CollisionKey("first");
+        CollisionKey key2 = new CollisionKey("second");
+        CollisionKey key3 = new CollisionKey("third");
 
-        map.put("Aa", "value1"); // hash = 2
-        map.put("BB", "value2"); // hash = 2
-        assertEquals(2, map.size());
-        assertEquals("value1", map.get("Aa"));
-        assertEquals("value2", map.get("BB"));
+        map.put(key1, "value1");
+        map.put(key2, "value2");
+        map.put(key3, "value3");
 
+        assertEquals(3, map.size());
+        assertEquals("value1", map.get(key1));
+        assertEquals("value2", map.get(key2));
+        assertEquals("value3", map.get(key3));
     }
 }

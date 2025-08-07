@@ -8,9 +8,9 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 public class Node<K, V> {
-    final K key;
-    V value;
-    Node<K, V> nextInChain;
+    public final K key;
+    public V value;
+    public Node<K, V> nextInChain;
 
     @Override
     public boolean equals(Object o) {

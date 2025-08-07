@@ -1,5 +1,6 @@
 package org.example.week04.hashmapwithchainingstrategy;
 
+import org.example.week04.linkedhashmapwithchainingstrategy.LinkedHashMapWithChainingStrategy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +20,7 @@ class HashMapTest {
                                                              Consumer<Map<K, V>> test) {
         List<Supplier<Map<K, V>>> mapFactories = new ArrayList<>();
         mapFactories.add(HashMapWithChainingStrategy::new);
+        mapFactories.add(LinkedHashMapWithChainingStrategy::new);
         mapFactories.add(HashMap::new);
 
         Stream.Builder<DynamicTest> testBuilder = Stream.builder();

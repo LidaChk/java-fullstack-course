@@ -1,14 +1,21 @@
 package org.example.week04.hashmapwithchainingstrategy;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 // ChainingStrategy: Resolves hash collisions by storing modes in linked lists (chains) at each bucket.
 // When collision occurs, new node is added to the list (O(1)).
 public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
 
-    private Node<K, V>[] table;
-    private int size;
-    private int capacity;
+    protected Node<K, V>[] table;
+    protected int size;
+    protected int capacity;
     private static final int DEFAULT_CAPACITY = 10;
     private static final float GROWTH_FACTOR = 1.5f;
     private static final float LOAD_FACTOR = 0.75f; // size/capacity
@@ -20,13 +27,14 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
         this.size = 0;
     }
 
-    private int hash(K key) {
+    protected int hash(K key) {
         return key == null ? 0 : Math.abs(((Object) key).hashCode() % capacity);
     }
 
-    private void ensureCapacity() {
+    protected void ensureCapacity() {
         if (size >= capacity * LOAD_FACTOR) {
-            capacity = table.length == 0 ? DEFAULT_CAPACITY : Math.max((int) (table.length * GROWTH_FACTOR) + 1, table.length + 1);
+            capacity = table.length == 0 ? DEFAULT_CAPACITY
+                    : Math.max((int) (table.length * GROWTH_FACTOR) + 1, table.length + 1);
 
             resize();
         }
@@ -122,7 +130,6 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
         return size == 0;
     }
 
-
     @Override
     public boolean containsValue(Object value) {
         for (Node<K, V> bucket : table) {
@@ -176,7 +183,6 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
         return values;
     }
 
-
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
@@ -190,11 +196,12 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
         size = 0;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Map<?, ?> m)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Map<?, ?> m))
+            return false;
         return this.entrySet().equals(m.entrySet());
     }
 
@@ -211,7 +218,8 @@ public class HashMapWithChainingStrategy<K, V> implements Map<K, V> {
         for (Node<K, V> bucket : table) {
             Node<K, V> current = bucket;
             while (current != null) {
-                if (!first) sb.append(", ");
+                if (!first)
+                    sb.append(", ");
                 sb.append("\"").append(current.key).append("\"").append(":").append(current.value);
                 first = false;
                 current = current.nextInChain;
