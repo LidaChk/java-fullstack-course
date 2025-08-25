@@ -22,8 +22,6 @@ public class Node<K, V> {
 
     @Override
     public int hashCode() {
-        // faster than Object.hash(key, value)
-        // null safe
-        return Objects.hashCode(key) ^ Objects.hashCode(value);
+        return  Objects.hash(key, value);
     }
 }

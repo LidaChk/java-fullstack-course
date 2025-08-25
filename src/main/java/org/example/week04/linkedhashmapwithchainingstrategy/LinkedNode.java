@@ -30,6 +30,6 @@ public class LinkedNode<K, V> extends Node<K, V> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), nextInInsertionOrder, prevInInsertionOrder);
+        return Objects.hash(key, value, nextInInsertionOrder, prevInInsertionOrder);
     }
 }

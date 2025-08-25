@@ -2,37 +2,67 @@ package org.example.week04;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("HashMapWithChainingStrategy Specific Implementation Tests")
 class HashMapWithChainingStrategyTest {
 
-    @Test
-    @DisplayName("equals() and hashCode() should work correctly")
-    void equalsAndHashCodeShouldWorkCorrectly() {
+    private static Stream<Arguments> mapContentsProvider() {
+        return Stream.of(
+                Arguments.of(Collections.emptyMap()),
+                Arguments.of(Map.of("key1", "value1")),
+                Arguments.of(Map.of("key1", "value1", "key2", "value2")),
+                Arguments.of(Map.of("key1", "value1", "key2", "value2", "key3", "value3"))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("mapContentsProvider")
+    @DisplayName("equals() and hashCode() between two custom maps")
+    void equalsAndHashCodeBetweenCustomMaps(Map<String, String> contents) {
         HashMapWithChainingStrategy<String, String> map1 = new HashMapWithChainingStrategy<>();
         HashMapWithChainingStrategy<String, String> map2 = new HashMapWithChainingStrategy<>();
-        Map<String, String> hashMap = new HashMap<>();
+
+        map1.putAll(contents);
+        map2.putAll(contents);
 
         assertEquals(map1, map2);
         assertEquals(map1.hashCode(), map2.hashCode());
+    }
 
-        map1.put("key1", "value1");
-        map1.put("key2", "value2");
-        map2.put("key1", "value1");
-        map2.put("key2", "value2");
-        hashMap.put("key1", "value1");
-        hashMap.put("key2", "value2");
+    @ParameterizedTest
+    @MethodSource("mapContentsProvider")
+    @DisplayName("equals() and hashCode() between custom and standard HashMap")
+    void equalsAndHashCodeWithStandardMap(Map<String, String> contents) {
+        HashMapWithChainingStrategy<String, String> custom = new HashMapWithChainingStrategy<>();
 
-        assertEquals(map1, map2);
-        assertEquals(map1.hashCode(), map2.hashCode());
-        assertEquals(map1, hashMap);
+        custom.putAll(contents);
+        Map<String, String> standard = new HashMap<>(contents);
 
-        map1.put("key3", "value3");
+        assertEquals(custom, standard);
+        assertEquals(custom.hashCode(), standard.hashCode());
+    }
+
+    @ParameterizedTest
+    @MethodSource("mapContentsProvider")
+    @DisplayName("custom maps with different contents are not equal")
+    void differentCustomMapsNotEqual(Map<String, String> contents) {
+        HashMapWithChainingStrategy<String, String> map1 = new HashMapWithChainingStrategy<>();
+        HashMapWithChainingStrategy<String, String> map2 = new HashMapWithChainingStrategy<>();
+
+        map1.putAll(contents);
+        map2.putAll(contents);
+
+        map1.put("key4", "value4");
         assertNotEquals(map1, map2);
     }
 
